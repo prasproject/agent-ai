@@ -1,0 +1,57 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "LiveChatDeployment"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "deploy_chat_system"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "LiveChatDev"
+
+[[workflows.workflow]]
+name = "LiveChatDeployment"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash deploy.sh"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "deploy_chat_system"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash deploy.sh"
+
+[[workflows.workflow]]
+name = "LiveChatDev"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./dev-deploy.sh"
+waitForPort = 5000
+
+[deployment]
+run = ["sh", "-c", "bash deploy.sh"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
